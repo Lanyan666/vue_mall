@@ -38,7 +38,7 @@
 <style scoped>
   .tab-bar-item {
     flex: 1;
-    font-size: 14px;
+    font-size: 10px;
   }
 
   .tab-bar-item .item-icon img, .item-active-icon img {
