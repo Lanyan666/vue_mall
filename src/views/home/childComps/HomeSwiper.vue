@@ -20,7 +20,7 @@ export default {
   },
   props: {
     banners: {
-      type: String,
+      type: Array,
       required: true
     }
   },

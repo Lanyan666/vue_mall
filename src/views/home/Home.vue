@@ -15,10 +15,10 @@
     <scroll
       class="content"
       ref="scroll"
-      :probeType="3"
+      :probe-type="3"
       @scroll="scrollBackToTop"
       @pullingUp="loadMore"
-      :pullUpLoad="true"
+      :pull-up-load="true"
     >
       <home-swiper :banners="banners" @swiperImageLoad="swiperImageLoad"></home-swiper>
       <recommend-view :recommends="recommends"></recommend-view>
@@ -75,13 +75,24 @@ export default {
       currentType: 'pop',
       isShowBackTop: false,
       tabOffsetTop: 0,
-      isTabFixed: false
+      isTabFixed: false,
+      saveY: 0
     };
   },
   computed: {
     showGoodsList() {
       return this.goods[this.currentType].list
     }
+  },
+  unmounted(){
+    console.log("destroyed");
+  },
+  activated(){
+    this.$refs.scroll.refresh();
+    this.$refs.scroll.scrollTo(0, this.saveY, 0);
+  },
+  deactivated(){
+    this.saveY = this.$refs.scroll.getScrollY();
   },
   created() {
     // 请求多个数据

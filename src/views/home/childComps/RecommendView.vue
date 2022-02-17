@@ -14,7 +14,7 @@ export default {
   name: 'RecommendView',
   props: {
     recommends: {
-      type: String,
+      type: Array,
       required: true
     }
   }
