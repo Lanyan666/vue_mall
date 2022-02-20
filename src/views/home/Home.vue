@@ -105,7 +105,7 @@ export default {
   mounted() {
     // 监听item中图片加载完成
     const refresh = this.debounce(this.$refs.scroll.refresh, 300)
-    this.$bus.on("itemImageLoad", () => {
+    this.$bus.on("imgLoad", () => {
       refresh();
     })
   },
