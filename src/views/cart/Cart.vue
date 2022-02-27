@@ -5,17 +5,20 @@
     </template>
   </nav-bar>
   <cart-list :cart-list="cartList"></cart-list>
+  <cart-bottom-bar></cart-bottom-bar>
 </template>
 
 <script>
 import NavBar from '@/components/common/navbar/NavBar.vue'
 import CartList from './childComps/cartList.vue'
+import cartBottomBar from './childComps/cartBottomBar.vue'
 import { mapGetters } from 'vuex'
 export default {
   name: 'Cart',
   components: {
     NavBar,
-    CartList
+    CartList,
+    cartBottomBar
   },
   computed:{
     ...mapGetters([
