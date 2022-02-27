@@ -4,12 +4,14 @@
     <scroll ref="scroll" class="content" :probe-type="3" @scroll="contentScroll">
       <detail-swiper :top-images="topImages"></detail-swiper>
       <detail-base-info :goods="goods"></detail-base-info>
-      <detail-goods-info :detail-info="detailInfo" @imageLoad="imageLoad"></detail-goods-info>
       <detail-shop-info :shop="shop"></detail-shop-info>
+      <detail-goods-info :detail-info="detailInfo" @imageLoad="imageLoad"></detail-goods-info>
       <detail-param-info ref="param" :param-info="paramInfo"></detail-param-info>
       <detail-comment-info ref="comment" :comment-info="commentInfo"></detail-comment-info>
       <goods-list ref="recommend" :goods="goodsList"></goods-list>
     </scroll>
+    <back-top v-show="showBackTop" @click="backTop"></back-top>
+    <detail-bottom-bar @addToCart="addToCart"></detail-bottom-bar>
   </div>
 </template>
 
@@ -21,10 +23,13 @@ import DetailGoodsInfo from './childComps/DetailGoodsInfo.vue'
 import DetailShopInfo from './childComps/DetailShopInfo.vue'
 import DetailParamInfo from './childComps/DetailParamInfo.vue'
 import DetailCommentInfo from './childComps/DetailCommentInfo.vue'
+import DetailBottomBar from './childComps/DetailBottomBar.vue'
 import { getDetail, getRecommend, Goods, Shop, GoodsParam } from '@/network/detail.js'
 
 import GoodsList from '@/components/content/goods/GoodsList.vue'
 import Scroll from '@/components/common/scroll/Scroll.vue'
+import { backTopMixin } from '@/common/mixin.js'
+
 export default {
   name: 'Detail',
   components: {
@@ -35,9 +40,11 @@ export default {
     DetailShopInfo,
     DetailParamInfo,
     DetailCommentInfo,
+    DetailBottomBar,
     GoodsList,
     Scroll
   },
+  mixins:[backTopMixin],
   data() {
     return {
       iid: "",
@@ -72,7 +79,7 @@ export default {
       }
 
     })
-    getRecommend().then((res)=>{
+    getRecommend().then((res) => {
       this.goodsList = res.data.list
     })
   },
@@ -99,30 +106,44 @@ export default {
       this._listenScrollTheme(-position.y)
     },
     _listenScrollTheme(position) {
-	      let length = this.themeTops.length;
-	      for (let i = 0; i < length; i++) {
-		      let iPos = this.themeTops[i];
-		      /**
-		       * 判断的方案:
-		       *  方案一:
-		       *    条件: (i < (length-1) && currentPos >= iPos && currentPos < this.themeTops[i+1]) || (i === (length-1) && currentPos >= iPos),
-		       *    优点: 不需要引入其他的内容, 通过逻辑解决
-		       *    缺点: 判断条件过长, 并且不容易理解
-		       *  方案二:
-		       *    条件: 给themeTops最后添加一个很大的值, 用于和最后一个主题的top进行比较.
-		       *    优点: 简洁明了, 便于理解
-		       *    缺点: 需要引入一个较大的int数字
-		       * 疑惑: 在第一个判断中, 为什么不能直接判断(currentPos >= iPos)即可?
-		       * 解答: 比如在某一个currentPos大于第0个时, 就会break, 不会判断后面的i了.
-		       */
-		      if (position >= iPos && position < this.themeTops[i+1]) {
-			      if (this.currentIndex !== i) {
-				      this.currentIndex = i;
-			      }
-			      break;
-		      }
-	      }
-      },
+      let length = this.themeTops.length;
+      for (let i = 0; i < length; i++) {
+        let iPos = this.themeTops[i];
+        /**
+         * 判断的方案:
+         *  方案一:
+         *    条件: (i < (length-1) && currentPos >= iPos && currentPos < this.themeTops[i+1]) || (i === (length-1) && currentPos >= iPos),
+         *    优点: 不需要引入其他的内容, 通过逻辑解决
+         *    缺点: 判断条件过长, 并且不容易理解
+         *  方案二:
+         *    条件: 给themeTops最后添加一个很大的值, 用于和最后一个主题的top进行比较.
+         *    优点: 简洁明了, 便于理解
+         *    缺点: 需要引入一个较大的int数字
+         * 疑惑: 在第一个判断中, 为什么不能直接判断(currentPos >= iPos)即可?
+         * 解答: 比如在某一个currentPos大于第0个时, 就会break, 不会判断后面的i了.
+         */
+        if (position >= iPos && position < this.themeTops[i + 1]) {
+          if (this.currentIndex !== i) {
+            this.currentIndex = i;
+          }
+          break;
+        }
+      }
+    },
+    // 加入购物车
+    addToCart() {
+      // 2.将商品信息添加到Store中
+      const obj = {}
+      obj.iid = this.iid
+      obj.imgURL = this.topImages[0]
+      obj.title = this.goods.title
+      obj.desc = this.goods.desc
+      obj.price = this.goods.realPrice
+      // this.$store.dispatch('addToCart', obj).then(() => {
+      //  this.$toast({message: '加入购物车成功'})
+      // })
+      this.$store.commit("addCart",obj)
+    }
   }
 }
 </script>

@@ -24,7 +24,5 @@ export default {
 </script>
 <style>
 @import "./assets/css/base.css";
-.main-tab-bar {
-  z-index: 999;
-}
+
 </style>

@@ -6,8 +6,7 @@
 
 <script>
 export default {
-  name: 'BackTop',
-  emits: ['close']
+  name: 'BackTop'
 }
 </script>
 
