@@ -29,6 +29,7 @@ import { getDetail, getRecommend, Goods, Shop, GoodsParam } from '@/network/deta
 import GoodsList from '@/components/content/goods/GoodsList.vue'
 import Scroll from '@/components/common/scroll/Scroll.vue'
 import { backTopMixin } from '@/common/mixin.js'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'Detail',
@@ -44,7 +45,7 @@ export default {
     GoodsList,
     Scroll
   },
-  mixins:[backTopMixin],
+  mixins: [backTopMixin],
   data() {
     return {
       iid: "",
@@ -56,7 +57,7 @@ export default {
       paramInfo: {},
       commentInfo: {},
       themeTops: [],
-      goodsList: []
+      goodsList: [],
     }
   },
   created() {
@@ -89,6 +90,7 @@ export default {
   deactivated() {
   },
   methods: {
+    ...mapActions(['addCart']),
     imageLoad() {
       this.$refs.scroll.refresh()
       // 获取对应的offsetTop
@@ -142,7 +144,13 @@ export default {
       // this.$store.dispatch('addToCart', obj).then(() => {
       //  this.$toast({message: '加入购物车成功'})
       // })
-      this.$store.commit("addCart",obj)
+      // this.$store.dispatch("addCart", obj).then(res => {
+      //   console.log(res)
+      // })
+      this.addCart(obj).then(res => {
+        console.log(res)
+        // this.$toast({ message: "这是插件式封装的toast组件" })
+      })
     }
   }
 }
